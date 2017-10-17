@@ -5,7 +5,7 @@
     <test name="Regression1">
         <parameter name="nameParam" value="Alex"/>
         <classes>
-            <class name="myprojects.automation.webinar.tests.SomeTest"/>
+            <class name="_tests.MyTest"/>
         </classes>
     </test>
 </suite>
