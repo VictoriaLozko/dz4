@@ -1,4 +1,4 @@
-package pages;
+package pages.adminpanel;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -12,7 +12,12 @@ import utils.SharedMethods;
 import java.util.concurrent.TimeUnit;
 
 public class AddProductPage {
-    private EventFiringWebDriver driver;
+
+
+    private void fillAddProductName(String name){
+        WebElement inputNameElement = driver.findElement(inputNameLocator);
+        inputNameElement.sendKeys(name);
+    }private EventFiringWebDriver driver;
     private By saveLocator = By.xpath("//input[@class='btn btn-primary save uppercase']");
     private By inputNameLocator = By.xpath("//input [@id = 'form_step1_name_1']");
     private By inputCountLocator = By.id("form_step1_qty_0_shortcut");
@@ -45,11 +50,6 @@ public class AddProductPage {
             closeMessage();
         }
 
-    }
-
-    private void fillAddProductName(String name){
-        WebElement inputNameElement = driver.findElement(inputNameLocator);
-        inputNameElement.sendKeys(name);
     }
 
     private void fillAddProductCount(Integer count){

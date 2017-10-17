@@ -4,6 +4,8 @@
 
     <test name="Regression1">
         <parameter name="nameParam" value="Alex"/>
+        <parameter name="browserName" value="chrome"/>
+        <parameter name="mainPageUrl" value="http://prestashop-automation.qatestlab.com.ua/ru/"/>
         <classes>
             <class name="_tests.MyTest"/>
         </classes>

@@ -1,18 +1,25 @@
 package _tests;
 
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.testng.Reporter;
 import org.testng.annotations.*;
-import pages.*;
+import pages.adminpanel.AddProductPage;
+import pages.adminpanel.DashboardPage;
+import pages.adminpanel.LoginPage;
+import pages.adminpanel.ProductPage;
+import pages.manesite.MainPage;
 import utils.BaseTest;
+import utils.RandomString;
+
+import java.util.Random;
 
 
 public class MyTest {
     EventFiringWebDriver driver;
 
+    @Parameters({"browserName"})
     @BeforeClass
-    public void setup() {
-        driver = BaseTest.getConfiguredDriver();
+    public void setup(String browser) {
+        driver = BaseTest.getConfiguredDriver(browser);
     }
 
     @AfterClass
@@ -67,26 +74,32 @@ public class MyTest {
 
    @Test(dependsOnMethods = "selectProduct")
    public void addProduct(){
+       Random random = new Random();
        ProductPage productPage = new ProductPage(driver);
        productPage.clickAddProductIcon();
 
        AddProductPage addProductPage = new AddProductPage(driver);
-       Integer count = new Integer(10);
-       Float price = new Float(100);
-       addProductPage.addProduct("QWERTY",count,price);
+       int i = random.nextInt(100);
+       if(i == 0){
+           i = 1;
+       }
+       Integer count = new Integer(i);
+       Float price = new Float(99.99);
+       String product_name = RandomString.getRandomString();
+       addProductPage.addProduct(product_name,count,price);
    }
 
-  @Test (dependsOnMethods = "selectProduct")
+  @Test (dependsOnMethods = "addProduct")
    public void logout(){
        DashboardPage dashboardPage = new DashboardPage(driver);
        dashboardPage.clickLogoutButtonWithJS();
    }
 
+   @Parameters({"mainPageUrl"})
+   @Test (dependsOnMethods = "logout")
+    public void checkProduct(String url){
+       MainPage mainPage = new MainPage(driver);
+       mainPage.goToAllProducts(url);
+   }
 
-    @Parameters({"nameParam"})
-    @Test
-    public void test3(String name) {
-        Reporter.log(String.format("Hello, %s!", name));
-
-    }
 }

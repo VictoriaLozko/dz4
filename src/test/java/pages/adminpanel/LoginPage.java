@@ -1,4 +1,4 @@
-package pages;
+package pages.adminpanel;
 
 import utils.Properties;
 import org.openqa.selenium.By;

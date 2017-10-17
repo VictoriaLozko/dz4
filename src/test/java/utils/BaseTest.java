@@ -11,8 +11,8 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 public abstract class BaseTest {
-    private static WebDriver getDriver() {
-        String browser = Properties.getBrowser();
+    private static WebDriver getDriver(String browser) {
+        //String browser = Properties.getBrowser();
         switch (browser) {
             case "firefox":
                 System.setProperty(
@@ -29,8 +29,8 @@ public abstract class BaseTest {
         }
     }
 
-    public static EventFiringWebDriver getConfiguredDriver(){
-        WebDriver driver = getDriver();
+    public static EventFiringWebDriver getConfiguredDriver(String browser){
+        WebDriver driver = getDriver(browser);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         EventFiringWebDriver wrappedDriver = new EventFiringWebDriver(driver);
