@@ -23,6 +23,7 @@ public class AllProductsPage {
         boolean isAdd = false;
         if(isProductAddByName(name) != 0){
             System.out.println("ТОВАР ДОБАВЛЕН!");
+            isAdd = true;
         }
         return isAdd;
     }
