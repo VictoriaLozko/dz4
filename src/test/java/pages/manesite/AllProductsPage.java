@@ -14,16 +14,19 @@ public class AllProductsPage {
     private By productListLocator = By.xpath("//div[@class='products row']/article");
     private By productsPagesLocator = By.xpath("//ul[@class='page-list clearfix text-xs-center']/li");
     private String productsPagesLocatorString = "//ul[@class='page-list clearfix text-xs-center']/li";
+    private int product_index;
 
     public AllProductsPage(EventFiringWebDriver driver){
         this.driver = driver;
     }
 
-    public boolean isProductAdd(String name, Integer count, Float price){
+    public boolean isProductAdd(String name){
         boolean isAdd = false;
-        if(isProductAddByName(name) != 0){
+        int index= isProductAddByName(name);
+        if( index != 0){
             System.out.println("ТОВАР ДОБАВЛЕН!");
             isAdd = true;
+            product_index = index;
         }
         return isAdd;
     }
@@ -47,6 +50,13 @@ public class AllProductsPage {
         for (int i=3; i <= (cnt -1); i++){
             WebElement nextPage = driver.findElement(By.xpath(productsPagesLocatorString + "[" + i + "]"));
             nextPage.click();
+
+            try{
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             waitForElement(loginButtonLocator);
             index = findProductByName(name);
             if (index != 0){
@@ -69,6 +79,23 @@ public class AllProductsPage {
             }
         }
         return index;
+    }
+
+    public boolean goToProductDescription(){
+        if(product_index < 1){
+            System.out.println("Недопустимый индекс");
+            return false;
+        }
+        WebElement product = driver.findElement(By.xpath("//div[@class='products row']/article[" + product_index + "]//h1/a"));
+        product.click();
+
+        try{
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 
 }

@@ -3,12 +3,14 @@ package _tests;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 import pages.adminpanel.AddProductPage;
 import pages.adminpanel.DashboardPage;
 import pages.adminpanel.LoginPage;
 import pages.adminpanel.ProductPage;
 import pages.manesite.AllProductsPage;
 import pages.manesite.MainPage;
+import pages.manesite.ProductDescriptionPage;
 import utils.BaseTest;
 import utils.RandomString;
 
@@ -20,6 +22,7 @@ public class MyTest {
     private String product_name;
     private Integer product_count;
     private Float product_price;
+    private boolean isProductDescriptionPageOpen;
 
     @Parameters({"browserName"})
     @BeforeClass
@@ -79,12 +82,31 @@ public class MyTest {
 
    @Parameters({"mainPageUrl"})
    @Test (dependsOnMethods = "logout")
-    public void checkProduct(String url){
+    public void checkProductIsAdd(String url){
        MainPage mainPage = new MainPage(driver);
        mainPage.goToAllProducts(url);
        AllProductsPage allProductsPage = new AllProductsPage(driver);
-       boolean isProductAdd = allProductsPage.isProductAdd(product_name,product_count,product_price);
+       boolean isProductAdd = allProductsPage.isProductAdd(product_name);
        Assert.assertTrue(isProductAdd,"Продукт не добавлен!");
+       isProductDescriptionPageOpen = allProductsPage.goToProductDescription();
+   }
+
+   @Test (dependsOnMethods = "checkProductIsAdd")
+   public void checkProductProperties(){
+       if(!isProductDescriptionPageOpen){
+           System.out.println("Не удалось открыть страницу с описанием товара!");
+           return;
+       }
+       ProductDescriptionPage productDescriptionPage = new ProductDescriptionPage(driver);
+       boolean isProductNameAddRight = productDescriptionPage.isNameAddRight(product_name);
+       boolean isProductPriceAddRight = productDescriptionPage.isPriceAddRight(product_price);
+       boolean isProductCountAddRight = productDescriptionPage.isCountAddRight(product_count);
+       SoftAssert softAssert = new SoftAssert();
+       softAssert.assertTrue(isProductNameAddRight, "Имя товара добавлено не верно");
+       softAssert.assertTrue(isProductPriceAddRight, "Цена товара добавлена не верно");
+       softAssert.assertTrue(isProductCountAddRight, "Количество товара добавлено не верно");
+
+       softAssert.assertAll();
    }
 
 }
