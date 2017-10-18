@@ -6,6 +6,7 @@ import pages.adminpanel.AddProductPage;
 import pages.adminpanel.DashboardPage;
 import pages.adminpanel.LoginPage;
 import pages.adminpanel.ProductPage;
+import pages.manesite.AllProductsPage;
 import pages.manesite.MainPage;
 import utils.BaseTest;
 import utils.RandomString;
@@ -15,6 +16,9 @@ import java.util.Random;
 
 public class MyTest {
     EventFiringWebDriver driver;
+    private String product_name;
+    private Integer product_count;
+    private Float product_price;
 
     @Parameters({"browserName"})
     @BeforeClass
@@ -83,10 +87,10 @@ public class MyTest {
        if(i == 0){
            i = 1;
        }
-       Integer count = new Integer(i);
-       Float price = new Float(99.99);
-       String product_name = RandomString.getRandomString();
-       addProductPage.addProduct(product_name,count,price);
+       product_count = new Integer(i);
+       product_price = new Float(99.99);
+       product_name = RandomString.getRandomString();
+       addProductPage.addProduct(product_name, product_count, product_price);
    }
 
   @Test (dependsOnMethods = "addProduct")
@@ -100,6 +104,8 @@ public class MyTest {
     public void checkProduct(String url){
        MainPage mainPage = new MainPage(driver);
        mainPage.goToAllProducts(url);
+       AllProductsPage allProductsPage = new AllProductsPage(driver);
+       allProductsPage.isProductAdd(product_name,product_count,product_price);
    }
 
 }

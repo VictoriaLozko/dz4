@@ -12,6 +12,8 @@ public class AllProductsPage {
     private EventFiringWebDriver driver;
     private By loginButtonLocator = By.xpath("//div[@class='user-info']/a");
     private By productListLocator = By.xpath("//div[@class='products row']/article");
+    private By productsPagesLocator = By.xpath("//ul[@class='page-list clearfix text-xs-center']/li");
+    private String productsPagesLocatorString = "//ul[@class='page-list clearfix text-xs-center']/li";
 
     public AllProductsPage(EventFiringWebDriver driver){
         this.driver = driver;
@@ -19,8 +21,9 @@ public class AllProductsPage {
 
     public boolean isProductAdd(String name, Integer count, Float price){
         boolean isAdd = false;
-        waitForElement(loginButtonLocator);
-        isProductAddByName(name);
+        if(isProductAddByName(name) != 0){
+            System.out.println("ТОВАР ДОБАВЛЕН!");
+        }
         return isAdd;
     }
 
@@ -31,17 +34,40 @@ public class AllProductsPage {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
-    private boolean isProductAddByName(String name){
-        boolean isAdd = false;
+    private int isProductAddByName(String name){
+        int isAdd = 0;
+        waitForElement(loginButtonLocator);
+        int index = findProductByName(name);
+        if (index != 0){
+            return index;
+        }
+        waitForElement(productsPagesLocator);
+        int cnt = driver.findElements(productsPagesLocator).size();
+        for (int i=3; i <= (cnt -1); i++){
+            WebElement nextPage = driver.findElement(By.xpath(productsPagesLocatorString + "[" + i + "]"));
+            nextPage.click();
+            waitForElement(loginButtonLocator);
+            index = findProductByName(name);
+            if (index != 0){
+                return index;
+            }
+        }
+
+        return isAdd;
+    }
+
+    private int findProductByName(String name){
+        int index = 0;
         int count = driver.findElements(productListLocator).size();
         WebElement item;
         for (int i = 1; i <= count; i++){
             item = driver.findElement(By.xpath("//div[@class='products row']/article[" + i + "]//h1/a"));
             if (item.getText().toString().equals(name)){
-                isAdd = true;
+                index = i;
+                break;
             }
         }
-        return isAdd;
+        return index;
     }
 
 }
